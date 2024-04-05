@@ -4,10 +4,12 @@ import time
 import random
 import keyboard
 from pynput.keyboard import Key, Controller
+import pydirectinput
 
 class WindowManager:
-    def __init__(self, window_title):
+    def __init__(self, window_title, bots_objects):
         self.window_title = window_title
+        self.bots_objects = bots_objects
 
     def bring_window_to_front(self, index=0):
         windows = gw.getWindowsWithTitle(self.window_title)
@@ -28,7 +30,7 @@ class WindowManager:
                 left, top, right, _ = window.left, window.top, window.right, window.top + 30  # 30 pikseli na wysokość paska tytułowego
                 center_x = left + (right - left) // 2
                 center_y = top + 15  # Środek paska tytułowego
-                pyautogui.moveTo(center_x, center_y+30, duration=0.5)
+                pyautogui.moveTo(center_x, center_y+20, duration=0.5)
                 pyautogui.leftClick()
                 return
         print(f"Nie znaleziono okna o identyfikatorze '{window_id}'.")
@@ -44,15 +46,50 @@ class WindowManager:
         else:
             return None
 
-    def press_space_multiple_times(self,num_times):
+    def press_space_multiple_times(self,num_times,search_dst_port):
+        print('----wyciaganie----')
+        for obj in self.bots_objects: 
+            if obj.dst_port == search_dst_port:
+                    found_object = obj
+                    break   
+            
         keyboard = Controller()
-        time.sleep(random.uniform(0.1 , 0.3))
+        self.click_window_by_id(found_object.window_id)
         for _ in range(num_times):
-            print("klik")
-            keyboard.press(Key.space)
-            time.sleep(random.uniform(0.2 , 0.3))
+            keyboard.press(Key.space) 
+            #print("klik")
+            time.sleep(random.uniform(0.1,0.3 ))  # Zwiększono zakres opóźnienia
             keyboard.release(Key.space)
-            time.sleep(random.uniform(0.3, 0.7))  # Zwiększono zakres opóźnienia
+            time.sleep(random.uniform(0.1, 0.3))  # Zwiększono zakres opóźnienia
             #pyautogui.press('space')
             #keyboard.press_and_release('space')
             #time.sleep(random.uniform(0.1 , 0.15))
+        print('---Zakonczono wyciaganie----')
+        found_object.last_time_fishing_end = time.time()
+        found_object.fishing = False
+
+    def re_set(self,state,search_dst_port,fiherman):
+     
+        for obj in self.bots_objects:
+            if obj.dst_port == search_dst_port:
+                    found_object = obj
+                    break   
+            
+        
+        if(state==True):
+            print("---pomyslne lowienie---")
+            #time.sleep(random.uniform(3.5 , 4 ))
+        else:
+            print("---niepomyslne lowienie---")
+            #time.sleep(random.uniform(2.0 , 2.2 ))
+        
+        self.click_window_by_id(found_object.window_id)
+        time.sleep(random.uniform(0.2 , 0.3 ))  # Zwiększono zakres opóźnienia
+        pydirectinput.typewrite('1')
+
+        time.sleep(random.uniform(0.2 , 0.3 ))  # Zwiększono zakres opóźnienia
+        
+        # Wciskanie spacji
+        pydirectinput.typewrite(' ')
+        print(" ----zarzucono---- ")
+        found_object.fishing = True
