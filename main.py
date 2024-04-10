@@ -40,7 +40,7 @@ class PacketSniffer:
 
 
     def start_sniffing(self):
-        sniff(iface=self.interface, prn=self.packet_callback, filter="tcp and (dst port 63226 or dst port 63499) and src host 146.59.108.118")
+        sniff(iface=self.interface, prn=self.packet_callback, filter="tcp and (dst port 50664 or dst port 50671 or dst port 50675) and src host 146.59.108.118")
 
 
 if __name__ == "__main__":
@@ -56,8 +56,10 @@ if __name__ == "__main__":
 
     window_title = "PolandMT2"  # Zastąp wartością tytułu okna, którą chcesz otworzyć
     objects = [
-        BotInfo(1377354, 63226, 0),
-        BotInfo(197716, 63499, 0)
+        BotInfo(853136, 50664, 0),
+        BotInfo(329198, 50671, 0),
+        BotInfo(329134, 50675, 0),
+
     ]    # bot init conecting windows id with ports
 
     window_manager = WindowManager(window_title,objects) # obsluga okien
@@ -88,12 +90,16 @@ if __name__ == "__main__":
             search_dst_port, number = data
             #print("Otrzymano dane - dst_port:", dst_port, "number:", number)
             window_manager.press_space_multiple_times(number,search_dst_port)
-        
-        for i in range(len(objects)):
+
+        #and ( not sniffer.fishing_info_queue.empty() and objects.fishing==False)
+
+        for obj in objects:
             aktualny_czas = time.time()
-            if( (aktualny_czas - objects[i].last_time_fishing_end > 10) and ( not sniffer.fishing_info_queue.empty() ) ):
-                    data = sniffer.fishing_info_queue.get()
-                    search_dst_port, state = data
+            if( (aktualny_czas - objects[i].last_time_fishing_end > (random.uniform(6.5 , 7.8 )) and objects[i].fishing == False or aktualny_czas- objects[i].last_trow > 20)):
+                    #data = sniffer.fishing_info_queue.get()
+                    #search_dst_port, state = data
+                    state = None
+                    search_dst_port = None
                     window_manager.re_set(state, search_dst_port,objects[i])
         # Zaktualizuj indeks iteracji
         i = (i + 1) % len(objects)

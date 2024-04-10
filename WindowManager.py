@@ -68,13 +68,14 @@ class WindowManager:
         found_object.last_time_fishing_end = time.time()
         found_object.fishing = False
 
-    def re_set(self,state,search_dst_port,fiherman):
-     
+    def re_set(self,state,search_dst_port,fisherman):
+        
+        """
         for obj in self.bots_objects:
             if obj.dst_port == search_dst_port:
                     found_object = obj
                     break   
-            
+        
         
         if(state==True):
             print("---pomyslne lowienie---")
@@ -82,8 +83,9 @@ class WindowManager:
         else:
             print("---niepomyslne lowienie---")
             #time.sleep(random.uniform(2.0 , 2.2 ))
+        """   
         
-        self.click_window_by_id(found_object.window_id)
+        self.click_window_by_id(fisherman.window_id)
         time.sleep(random.uniform(0.2 , 0.3 ))  # Zwiększono zakres opóźnienia
         pydirectinput.typewrite('1')
 
@@ -92,4 +94,5 @@ class WindowManager:
         # Wciskanie spacji
         pydirectinput.typewrite(' ')
         print(" ----zarzucono---- ")
-        found_object.fishing = True
+        fisherman.fishing = True
+        fisherman.last_trow = time.time()

@@ -7,4 +7,5 @@ class  BotInfo:
         self.space_press = space_press
         self.config = True
         self.fishing = False
+        self.last_trow = time.time()
         self.last_time_fishing_end = time.time()
