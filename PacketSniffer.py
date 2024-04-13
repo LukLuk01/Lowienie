@@ -18,23 +18,23 @@ class PacketSniffer:
         dst_port = None
         number = None
         state = False
-        if IP in packet and TCP in packet:
-            raw_data = bytes(packet[TCP].payload)
+        if IP in packet and TCP in packet: # type: ignore
+            raw_data = bytes(packet[TCP].payload) # type: ignore
             if self.target_hex in raw_data.hex():
                 print(len(raw_data.hex()))
                 start_index = raw_data.find(b"jeszcze")+len(b"jeszcze ")
                 number_bytes = raw_data[start_index:start_index + 1]
-                dst_port = packet[TCP].dport
+                dst_port = packet[TCP].dport # type: ignore
                 number = int(number_bytes.decode('utf-8'))
                 self.data_queue.put((dst_port, number))
                 print(f"---odebrano pakiet {dst_port}----\n")
                 if self.fishing_end_info_unsucces in raw_data.hex():
                     state = False
-                    dst_port = packet[TCP].dport
+                    dst_port = packet[TCP].dport # type: ignore
                     self.fishing_info_queue.put((dst_port, state))
                 if self.fising_end_info_succes in raw_data.hex():
                     state = True
-                    dst_port = packet[TCP].dport
+                    dst_port = packet[TCP].dport # type: ignore
                     self.fishing_info_queue.put((dst_port, state))
 
 
@@ -50,7 +50,7 @@ class PacketSniffer:
             try:
                 packet = sniff(filter="tcp and src host " + self.target_ip, count=1, timeout=1)
                 if packet:
-                    source_port = packet[0][TCP].dport
+                    source_port = packet[0][TCP].dport # type: ignore
                     self.unique_ports.add(source_port)
             except KeyboardInterrupt:
                 break
