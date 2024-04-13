@@ -9,3 +9,4 @@ class  BotInfo:
         self.fishing = False
         self.last_trow = time.time()
         self.last_time_fishing_end = time.time()
+        self.fishing_bonus = None
