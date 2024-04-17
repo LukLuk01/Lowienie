@@ -3,14 +3,13 @@ from queue import Queue
 
 
 class PacketSniffer:
-    def __init__(self, interface, target_ip, target_hex,fishing_end_info_unsucces,fising_end_info_succes):
+    def __init__(self, interface, target_ip, target_hex):
         self.interface = interface
         self.target_hex = target_hex
-        self.fishing_end_info_unsucces =fishing_end_info_unsucces
-        self.fising_end_info_succes =fising_end_info_succes
         self.data_queue = Queue()
         self.fishing_info_queue = Queue()
         self.target_ip = target_ip
+        self.destination_ip = '192.168.0.171'
         self.pulling = False
         self.unique_ports = set()  # Zbiór do przechowywania unikalnych portów
 
@@ -48,7 +47,7 @@ class PacketSniffer:
         # Nasłuchiwanie na przychodzące pakiety TCP przez 10 sekund
         while time.time() - start_time < 3:
             try:
-                packet = sniff(filter="tcp and src host " + self.target_ip, count=1, timeout=1)
+                packet = sniff(filter=f"tcp and src host {self.target_ip} and dst host {self.destination_ip}", count=1, timeout=1)
                 if packet:
                     source_port = packet[0][TCP].dport # type: ignore
                     self.unique_ports.add(source_port)

@@ -6,11 +6,12 @@ from pynput.keyboard import Key, Controller
 import pydirectinput
 import threading
 import sched
+from pywinauto import application
 
 class WindowManager:
-    def __init__(self, window_title, bots_objects):
+    def __init__(self, window_title):
         self.window_title = window_title
-        self.bots_objects = bots_objects
+        self.windows_id = []
         self.delay_press=1815
         self.scheduler = sched.scheduler(time.time, time.sleep)
 
@@ -20,9 +21,11 @@ class WindowManager:
             print(f"Znaleziono okno o nazwie '{self.window_title}':")
             for i, w in enumerate(window):
                 print(f"Identyfikator: {w._hWnd}, Indeks: {i}")
-                self.bots_objects[i].window_id = w._hWnd
+                self.windows_id.append(w._hWnd)
         else:
             print(f"Nie znaleziono okna o nazwie '{self.window_title}'.")
+
+        return self.windows_id
 
     def click_window_by_id(self, window_id):
         windows = gw.getWindowsWithTitle(self.window_title)
@@ -36,6 +39,20 @@ class WindowManager:
                 return
         print(f"Nie znaleziono okna o identyfikatorze '{window_id}'.")
 
+    def click_on_pt_partner(self, window_id):
+        try:
+            windows = gw.getWindowsWithTitle(self.window_title)
+            for window in windows:
+                if window._hWnd == window_id:
+                    left, top, right, _ = window.left, window.top, window.right, window.top + 30  # 30 pikseli na wysokość paska tytułowego
+                    point_x = left + 25
+                    point_y = top + 210  # Środek paska tytułowego
+                    pyautogui.moveTo(point_x, point_y, duration=0)
+                    pyautogui.leftClick()
+                    return
+            return None
+        except Exception as e:
+            print("Wystąpił błąd:", e)
 
     def get_active_window_id(self):
         active_window = gw.getActiveWindow()
@@ -90,3 +107,13 @@ class WindowManager:
             self.click_window_by_id(obj.d)
             pydirectinput.typewrite('2')
         self.scheduler.enter( self.delay_press, 1, self.add_5_prc_bonus, ())  # Zaplanuj kolejne naciśnięcie klawisza "2" za 30 minut
+
+    def activate_window_by_id(self, window_id):
+        try:
+            app = application.Application()
+            app.connect(handle=window_id)
+            window = app.window(handle=window_id)
+            window.set_focus()
+            #print("Okno zostało aktywowane.")
+        except Exception as e:
+            print("Wystąpił błąd:", e)
