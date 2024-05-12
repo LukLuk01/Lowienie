@@ -46,7 +46,7 @@ class PacketSniffer:
         start_time = time.time()
     
         # Nasłuchiwanie na przychodzące pakiety TCP przez 10 sekund
-        while time.time() - start_time < 3:
+        while time.time() - start_time < 7:
             try:
                 packet = sniff(filter="tcp and src host " + self.target_ip, count=1, timeout=1)
                 if packet:

@@ -23,9 +23,9 @@ def init(objects):
 if __name__ == "__main__":
 
     interface = "Ethernet"  # Zastąp "eth0" właściwą nazwą interfejsu Ethernet
-    target_hex = "042b000e0000000002c928" # informacja o ilosc spacji
+    target_hex = "042b000e0000000002a" # informacja o ilosc spacji
     
-    fishing_end_info_unsucces ="6e6965706f776f647a656e69656d2e" # informacja o  nie pomysllnym polowie
+    fishing_end_info_unsucces ="6e6965706f776f647a656e69656d2e" # informacja o  nie pomysllnym p olowie
     fising_end_info_succes = "20706f776f647a656e69656d2e5903f90d0000ffff" # informacja o pomysllnym polowie
     target_ip = "146.59.108.118"
 
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     sniffer_thread.daemon = True  # Ustawienie wątku jako demon powoduje zakończenie go, gdy główny wątek zakończy działanie
     sniffer_thread.start()
 
-    init(objects)
+    init(objects) 
     time.sleep(1)
     window_manager.start_scheduler()
 
@@ -58,13 +58,10 @@ if __name__ == "__main__":
             data = sniffer.data_queue.get()
             search_dst_port, number = data
             window_manager.press_space_multiple_times(number,search_dst_port)
-            
+        aktualny_czas = time.time()
         for obj in objects:  
-            aktualny_czas = time.time()
-            if( (aktualny_czas - obj.last_time_fishing_end > (random.uniform(6.5 , 7.8 )) and obj.fishing == False or aktualny_czas- obj.last_trow > 20)):
+            if( (aktualny_czas - obj.last_time_fishing_end > (random.uniform( 9, 9.4)) and obj.fishing == False or aktualny_czas- obj.last_trow > 20)):
                 window_manager.re_set(obj)
-
         
 
 
-    
